@@ -7,7 +7,7 @@ import CheckboxLabels from './checkbox';
 import OutlinedButtons from './buttons';
 // import num from './data/num.json'
 
-let state = {
+const state = {
   labels: ['January', 'February', 'March',
     'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
   datasets: [
@@ -21,12 +21,13 @@ let state = {
   ]
 };
 function App () {
+  const [showData, setShowData] = useState(state);
+
   function parent (prop) {
     console.log('prop', prop);
-    state = {
-      data: prop
-    };
-    console.log('state', state);
+    const data = { ...showData };
+    data.datasets[0].data = prop;
+    setShowData(data);
   }
 
   return (
