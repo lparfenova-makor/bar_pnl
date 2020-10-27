@@ -3,30 +3,32 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-export default function CheckboxLabels () {
+export default function CheckboxLabels (props) {
   const [state, setState] = React.useState({
-    checked2020: true,
-    checked2019: false,
-    checked2018: false
-
+    2020: true,
+    2019: false,
+    2018: false
   });
 
   const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+    const params = { ...state, [event.target.name]: event.target.checked };
+    setState(params);
+
+    props.updateYears(params);
   };
 
   return (
     <FormGroup row>
       <FormControlLabel
-        control={<Checkbox checked={state.checked2020} onChange={handleChange} name='checked2020' color='primary' />}
+        control={<Checkbox checked={state['2020']} onChange={handleChange} name='2020' color='primary' />}
         label='2020'
       />
       <FormControlLabel
         control={
           <Checkbox
-            checked={state.checked2019}
+            checked={state['2019']}
             onChange={handleChange}
-            name='checked2019'
+            name='2019'
             color='primary'
           />
         }
@@ -35,9 +37,9 @@ export default function CheckboxLabels () {
       <FormControlLabel
         control={
           <Checkbox
-            checked={state.checked2018}
+            checked={state['2018']}
             onChange={handleChange}
-            name='checked2018'
+            name='2018'
             color='primary'
           />
         }
