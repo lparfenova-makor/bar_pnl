@@ -1,12 +1,12 @@
 
-import './App.css';
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-// import data from './data/income.json'
+
+// @material-ui/core components
 import CheckboxLabels from './checkbox';
-import OutlinedButtons from './buttons';
-import income from './data/income.json';
-// import num from './data/num.json'
+import dataService from './data/data.service';
+// import OutlinedButtons from './buttons';
+
 
 const state = {
   labels: ['January', 'February', 'March',
@@ -17,84 +17,97 @@ const state = {
       backgroundColor: 'color(window.chartColors.red).alpha(0.5).rgbString(),',
       borderColor: 'rgba(0,0,0,1)',
       borderWidth: 2,
-      data: [65, 59, 80, 81, 56, 60, 50, 70, 71, 46]
-    },
-    {
-      label: '2019',
-      backgroundColor: 'red',
-      borderColor: 'rgba(100,100,100,100)',
-      borderWidth: 2,
-      data: [65, 59, 80, 81, 56, 60, 50, 70, 71, 46]
-    },
-    {
-      label: '2018',
-      backgroundColor: 'blue',
-      borderColor: 'rgba(100,100,100,100)',
-      borderWidth: 2,
-      data: [65, 59, 80, 81, 56, 60, 50, 70, 71, 46]
+      data: dataService.query(),
     }
   ]
 };
 
-function App () {
+function App() {
   const [data, setData] = useState({});
   const [showData, setShowData] = useState({});
+  const [label, setLabel] = useState('choose the data');
+  const [isReportChanged, setIsReportChanged] = useState(false);
+  
+
 
   useEffect(() => {
-    zalupka();
+    const result = update(state);
+    console.log('data', state.datasets.data)
+    setData(result);
+    const yearFilter = { ...result };
+    yearFilter.datasets = yearFilter.datasets.filter(dt => dt.label === '2020');
+    setShowData(yearFilter);
   }, []);
 
-  function zalupka () {
+  function update(values) {
     const result = {
       labels: ['January', 'February', 'March',
         'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-      datasets: []
+      datasets: dataService.query(),
     };
 
-    const years = Object.keys(income);
+    const yearColor = {
+      2020: 'rgba(255, 206, 86, 0.9)',
+      2019: 'rgba(54, 162, 235, 0.6)',
+      2018: 'rgba(255, 99, 132, 0.6)'
+    };
+
+    const years = Object.keys(values);
     for (const year of years) {
-      const data = income[year];
-      const values = Object.values(data);
+      const data = values[year];
+      const serverData = Object.values(data);
       result.datasets.push({
         label: year,
-        backgroundColor: 'red',
+        backgroundColor: yearColor[year],
         borderColor: 'rgba(100,100,100,100)',
         borderWidth: 2,
-        data: values
+        data: serverData
       });
     }
 
+    return result;
+  }
+
+  function parent(fetched, label) {
+    console.log('query', fetched);
+
+    const result = update(fetched);
     setData(result);
-    const something = { ...result };
-    something.datasets = something.datasets.filter(dt => dt.label === '2020');
-    setShowData(something);
+    handleReportChange(result);
+    setLabel(label);
+
   }
 
-  function parent (prop) {
-    console.log('prop', prop);
-    const localState = { ...state };
-    localState.datasets[0].data = prop;
-    setShowData(localState);
-    console.log('state', state);
-  }
-
-  function updateYears (params) {
-    const copyData = { ...data };
+  function updateYears(params, isReportChanged = false, result = data) {
+    const copyData = { ...result };
+    console.log(copyData);
     const datasets = copyData.datasets;
     const newDatasets = datasets.filter(dt => params[dt.label]);
     copyData.datasets = newDatasets;
     setShowData(copyData);
+    setIsReportChanged(isReportChanged);
+  }
+
+  function handleReportChange(result) {
+    const params = {
+      2020: true,
+      2019: false,
+      2018: false
+    };
+    setIsReportChanged(true);
+    updateYears(params, true, result);
   }
 
   return (
-    <div>
-      <OutlinedButtons parent={parent} />
+    <div style={{ margin: 100, width: 1280 }}>
+      {/* <OutlinedButtons parent={parent} /> */}
       <Bar
+        parent={parent}
         data={showData}
         options={{
           title: {
             display: true,
-            text: 'Average Rainfall per month',
+            text: 'Enigma monthly sales and P&L history',
             fontSize: 20
           },
           legend: {
@@ -103,7 +116,7 @@ function App () {
           }
         }}
       />
-      <CheckboxLabels updateYears={updateYears} />
+      <CheckboxLabels updateYears={updateYears} isReportChanged={isReportChanged} />
     </div>
   );
 }

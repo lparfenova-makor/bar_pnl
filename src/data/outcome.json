@@ -1,0 +1,44 @@
+{
+    "2020": {
+        "January": 75,
+        "February": 59,
+        "March": 80,
+        "April": 81,
+        "May": 81,
+        "June": 46,
+        "July": 71,
+        "August": 70,
+        "September": 50,
+        "October": 60,
+        "November": 81,
+        "December": 65
+    },
+    "2019": {
+        "January": 171,
+        "February": 159,
+        "March": 80,
+        "April": 81,
+        "May": 81,
+        "June": 46,
+        "July": 71,
+        "August": 70,
+        "September": 50,
+        "October": 60,
+        "November": 81,
+        "December": 65
+    },
+    "2018": {
+        "January": 169,
+        "February": 159,
+        "March": 80,
+        "April": 81,
+        "May": 81,
+        "June": 46,
+        "July": 71,
+        "August": 70,
+        "September": 50,
+        "October": 60,
+        "November": 81,
+        "December": 65
+    }
+}
