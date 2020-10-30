@@ -1,49 +1,28 @@
-
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 
 // @material-ui/core components
 import CheckboxLabels from './checkbox';
 import dataService from './data/data.service';
-// import OutlinedButtons from './buttons';
 
-
-const state = {
-  labels: ['January', 'February', 'March',
-    'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  datasets: [
-    {
-      label: '2020',
-      backgroundColor: 'color(window.chartColors.red).alpha(0.5).rgbString(),',
-      borderColor: 'rgba(0,0,0,1)',
-      borderWidth: 2,
-      data: dataService.query(),
-    }
-  ]
-};
-
-function App() {
+const income = dataService.query();
+function App () {
   const [data, setData] = useState({});
   const [showData, setShowData] = useState({});
-  const [label, setLabel] = useState('choose the data');
-  const [isReportChanged, setIsReportChanged] = useState(false);
-  
-
 
   useEffect(() => {
-    const result = update(state);
-    console.log('data', state.datasets.data)
+    const result = update(income);
     setData(result);
     const yearFilter = { ...result };
     yearFilter.datasets = yearFilter.datasets.filter(dt => dt.label === '2020');
     setShowData(yearFilter);
   }, []);
 
-  function update(values) {
+  function update (values) {
     const result = {
       labels: ['January', 'February', 'March',
         'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-      datasets: dataService.query(),
+      datasets: []
     };
 
     const yearColor = {
@@ -68,41 +47,17 @@ function App() {
     return result;
   }
 
-  function parent(fetched, label) {
-    console.log('query', fetched);
-
-    const result = update(fetched);
-    setData(result);
-    handleReportChange(result);
-    setLabel(label);
-
-  }
-
-  function updateYears(params, isReportChanged = false, result = data) {
-    const copyData = { ...result };
-    console.log(copyData);
+  function updateYears (params) {
+    const copyData = { ...data };
     const datasets = copyData.datasets;
     const newDatasets = datasets.filter(dt => params[dt.label]);
     copyData.datasets = newDatasets;
     setShowData(copyData);
-    setIsReportChanged(isReportChanged);
-  }
-
-  function handleReportChange(result) {
-    const params = {
-      2020: true,
-      2019: false,
-      2018: false
-    };
-    setIsReportChanged(true);
-    updateYears(params, true, result);
   }
 
   return (
     <div style={{ margin: 100, width: 1280 }}>
-      {/* <OutlinedButtons parent={parent} /> */}
       <Bar
-        parent={parent}
         data={showData}
         options={{
           title: {
@@ -116,7 +71,7 @@ function App() {
           }
         }}
       />
-      <CheckboxLabels updateYears={updateYears} isReportChanged={isReportChanged} />
+      <CheckboxLabels updateYears={updateYears} />
     </div>
   );
 }

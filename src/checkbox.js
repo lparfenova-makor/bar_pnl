@@ -9,28 +9,13 @@ export default function CheckboxLabels(props) {
     2019: false,
     2018: false
   });
-  const [isReportChanged, setIsReportChanged] = React.useState(false);
 
   const handleChange = (event) => {
     const params = { ...state, [event.target.name]: event.target.checked };
     setState(params);
     props.updateYears(params, false);
-    setIsReportChanged(false)
 
   };
-  useEffect(() => {
-    setIsReportChanged(props.isReportChanged);
-  })
-
-  useEffect(() => {
-    if (isReportChanged) {
-      setState({
-        2020: true,
-        2019: false,
-        2018: false
-      });
-    }
-  }, [isReportChanged]);
 
   return (
     <FormGroup row>
